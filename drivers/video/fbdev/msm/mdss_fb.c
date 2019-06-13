@@ -59,7 +59,9 @@
 #include "mdss_smmu.h"
 #include "mdss_mdp.h"
 #include "dsi_access.h"
-
+#ifdef CONFIG_KLAPSE
+#include <linux/klapse.h>
+#endif
 #ifdef CONFIG_FB_MSM_TRIPLE_BUFFER
 #define MDSS_FB_NUM 3
 #else
@@ -966,7 +968,7 @@ int mdss_first_set_feature(struct mdss_panel_data *pdata, int first_ce_state, in
 		pr_err("%s,not available\n",__func__);
 		return -1;
 	}
-	
+
 	if((first_ce_state != -1) || (first_cabc_state != -1) || (first_srgb_state != -1) || (first_gamma_state != -1))
 		printk("%s,first_ce_state: %d,first_cabc_state: %d,first_srgb_state=%d,first_gamma_state=%d\n",__func__,
 			first_ce_state,first_cabc_state,first_srgb_state,first_gamma_state);
@@ -985,7 +987,7 @@ int mdss_first_set_feature(struct mdss_panel_data *pdata, int first_ce_state, in
 		default:
 			pr_debug("unknow cmds: %d\n", first_ce_state);
 			break;
-			
+
 	}
 	switch(first_cabc_state) {
 		case 0x1:
@@ -1001,7 +1003,7 @@ int mdss_first_set_feature(struct mdss_panel_data *pdata, int first_ce_state, in
 		default:
 			pr_debug("unknow cmds: %d\n", first_cabc_state);
 			break;
-			
+
 	}
 	switch(first_srgb_state) {
 		case 0x1:
@@ -1017,7 +1019,7 @@ int mdss_first_set_feature(struct mdss_panel_data *pdata, int first_ce_state, in
 		default:
 			pr_debug("unknow cmds: %d\n", first_srgb_state);
 			break;
-			
+
 	}
 
 	switch(first_gamma_state) {
@@ -1030,7 +1032,7 @@ int mdss_first_set_feature(struct mdss_panel_data *pdata, int first_ce_state, in
 		default:
 			pr_debug("unknow cmds: %d\n", first_gamma_state);
 			break;
-			
+
 	}
 	switch(first_cabc_movie_state) {
 		case 0x1:
@@ -1121,7 +1123,7 @@ static ssize_t mdss_fb_set_ce(struct device *dev,struct device_attribute *attr,c
 		pr_err("%s,wait first_set_bl\n",__func__);
 		return len;
 	}
- 
+
 	pr_err("tsx_###_%s,set_ce_cmd: %d\n",__func__, param);
 
 	if(ce_resume){
@@ -1144,7 +1146,7 @@ static ssize_t mdss_fb_set_ce(struct device *dev,struct device_attribute *attr,c
 		default:
 			pr_err("unknow cmds: %d\n", param);
 			break;
-			
+
 	}
 	printk("tsx ##### ce over ###\n");
 	return len;
@@ -1226,7 +1228,7 @@ static ssize_t mdss_fb_set_cabc(struct device *dev,struct device_attribute *attr
 		default:
 			pr_err("unknow cmds: %d\n", param);
 			break;
-			
+
 	}
 	printk("guorui ##### cabc over ###\n");
 	return len;
@@ -1308,7 +1310,7 @@ static ssize_t mdss_fb_set_srgb(struct device *dev,struct device_attribute *attr
 		default:
 			pr_err("unknow cmds: %d\n", param);
 			break;
-			
+
 	}
 	printk("guorui ##### srgb over ###\n");
 	return len;
@@ -2871,7 +2873,7 @@ static int mdss_fb_blank(int blank_mode, struct fb_info *info)
 	int ret;
 	struct mdss_panel_data *pdata;
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
-	
+
 	if ((info == prim_fbi) && (blank_mode == FB_BLANK_UNBLANK) &&
 		atomic_read(&prim_panel_is_on)) {
 		atomic_set(&prim_panel_is_on, false);
